@@ -32,13 +32,13 @@ public class studentExamInterfaceMid extends javax.swing.JFrame {
         jLayeredPane1 = new javax.swing.JLayeredPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
+        btnSubmit = new javax.swing.JButton();
+        question = new javax.swing.JLabel();
+        btnC = new javax.swing.JButton();
+        btnD = new javax.swing.JButton();
+        btnB = new javax.swing.JButton();
+        btnA = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -53,35 +53,35 @@ public class studentExamInterfaceMid extends javax.swing.JFrame {
         jLabel1.setText("Question 1 of 10");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, -1, -1));
 
-        jButton1.setText("Next");
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 390, 70, -1));
+        btnNext.setText("Next");
+        jPanel1.add(btnNext, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 390, 70, -1));
 
-        jButton2.setText("Submit");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 390, -1, -1));
+        btnSubmit.setText("Submit");
+        jPanel1.add(btnSubmit, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 390, -1, -1));
 
-        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Enter Question...");
-        jLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jLabel2.setOpaque(true);
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 420, 130));
+        question.setBackground(new java.awt.Color(255, 255, 255));
+        question.setText("Enter Question...");
+        question.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        question.setOpaque(true);
+        jPanel1.add(question, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 420, 130));
 
-        jButton3.setText("C.");
-        jButton3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton3.addActionListener(this::jButton3ActionPerformed);
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 300, 420, -1));
+        btnC.setText("C.");
+        btnC.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnC.addActionListener(this::btnCActionPerformed);
+        jPanel1.add(btnC, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 300, 420, -1));
 
-        jButton4.setText("D.");
-        jButton4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton4.addActionListener(this::jButton4ActionPerformed);
-        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, 420, -1));
+        btnD.setText("D.");
+        btnD.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnD.addActionListener(this::btnDActionPerformed);
+        jPanel1.add(btnD, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, 420, -1));
 
-        jButton5.setText("B.");
-        jButton5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 420, -1));
+        btnB.setText("B.");
+        btnB.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jPanel1.add(btnB, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 420, -1));
 
-        jButton6.setText("A.");
-        jButton6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 420, -1));
+        btnA.setText("A.");
+        btnA.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jPanel1.add(btnA, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 420, -1));
 
         jLayeredPane1.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 50, 490, 440));
 
@@ -90,13 +90,13 @@ public class studentExamInterfaceMid extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnCActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnDActionPerformed
 
     /**
      * @param args the command line arguments
@@ -124,15 +124,15 @@ public class studentExamInterfaceMid extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton btnA;
+    private javax.swing.JButton btnB;
+    private javax.swing.JButton btnC;
+    private javax.swing.JButton btnD;
+    private javax.swing.JButton btnNext;
+    private javax.swing.JButton btnSubmit;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel question;
     // End of variables declaration//GEN-END:variables
 }

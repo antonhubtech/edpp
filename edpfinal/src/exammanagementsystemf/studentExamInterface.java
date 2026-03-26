@@ -4,6 +4,13 @@
  */
 package exammanagementsystemf;
 
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.DriverManager;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ANTON
@@ -15,10 +22,88 @@ public class studentExamInterface extends javax.swing.JFrame {
     /**
      * Creates new form studentExamInterface
      */
-    public studentExamInterface() {
+    public studentExamInterface(int studentId, String subject) {
         initComponents();
         setLocationRelativeTo(null);
+
+        this.studentId = studentId;
+        this.subject = subject;
+
+        try{
+           loadQuestions();
+           showQuestion();
+
+        } catch (Exception e){
+           JOptionPane.showMessageDialog(this, e.getMessage());
+}
     }
+    
+    Connection con;
+    PreparedStatement pst;
+    ResultSet rs;
+    
+    int studentId;
+    String subject;
+    int currentQuestion = 0;
+    int score = 0;
+    
+    ArrayList<String> questionsList = new ArrayList<>();
+    ArrayList<String> correctAnswers = new ArrayList<>();
+    ArrayList<String[]> choicesList = new ArrayList<>();
+
+    String selectedAnswer = "";
+    
+    public static Connection getConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/exammanagementsystem",
+                "root",
+                ""
+            );
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void loadQuestions() {
+        try{
+            String sql = "SELECT * FROM questions WHERE subject=?";
+            con = getConnection();
+            pst.setString(1, subject);
+            
+            rs = pst.executeQuery();
+
+            while(rs.next()){
+                
+            questionsList.add(rs.getString("question"));
+            
+            choicesList.add(new String[]{
+                rs.getString("A"),
+                rs.getString("B"),
+                rs.getString("C"),
+                rs.getString("D")
+            });
+            correctAnswers.add(rs.getString("correct_answer"));
+        }
+       }catch (Exception e){
+           JOptionPane.showMessageDialog(this, e.getMessage());
+       }
+    }
+    
+    public void showQuestion(){
+        questions.setText(questionsList.get(currentQuestion));
+        
+        String[] choices = choicesList.get(currentQuestion);
+        
+        btnA.setText("A. " + choices[0]);
+        btnB.setText("B. " + choices[1]);
+        btnC.setText("C. " + choices[2]);
+        btnD.setText("D. " + choices[3]);
+    }
+    
+    
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -32,13 +117,13 @@ public class studentExamInterface extends javax.swing.JFrame {
         jLayeredPane1 = new javax.swing.JLayeredPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnNext = new javax.swing.JButton();
+        btnSubmit = new javax.swing.JButton();
+        questions = new javax.swing.JLabel();
+        btnC = new javax.swing.JButton();
+        btnD = new javax.swing.JButton();
+        btnB = new javax.swing.JButton();
+        btnA = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -53,35 +138,39 @@ public class studentExamInterface extends javax.swing.JFrame {
         jLabel1.setText("Question 1 of 10");
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 20, -1, -1));
 
-        jButton1.setText("Next");
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 390, 70, -1));
+        btnNext.setText("Next");
+        btnNext.addActionListener(this::btnNextActionPerformed);
+        jPanel1.add(btnNext, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 390, 70, -1));
 
-        jButton2.setText("Submit");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 390, -1, -1));
+        btnSubmit.setText("Submit");
+        btnSubmit.addActionListener(this::btnSubmitActionPerformed);
+        jPanel1.add(btnSubmit, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 390, -1, -1));
 
-        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Enter Question...");
-        jLabel2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jLabel2.setOpaque(true);
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 420, 130));
+        questions.setBackground(new java.awt.Color(255, 255, 255));
+        questions.setText("Enter Question...");
+        questions.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        questions.setOpaque(true);
+        jPanel1.add(questions, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 80, 420, 130));
 
-        jButton3.setText("C.");
-        jButton3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton3.addActionListener(this::jButton3ActionPerformed);
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 300, 420, -1));
+        btnC.setText("C.");
+        btnC.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnC.addActionListener(this::btnCActionPerformed);
+        jPanel1.add(btnC, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 300, 420, -1));
 
-        jButton4.setText("D.");
-        jButton4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jButton4.addActionListener(this::jButton4ActionPerformed);
-        jPanel1.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, 420, -1));
+        btnD.setText("D.");
+        btnD.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnD.addActionListener(this::btnDActionPerformed);
+        jPanel1.add(btnD, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 330, 420, -1));
 
-        jButton5.setText("B.");
-        jButton5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jPanel1.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 420, -1));
+        btnB.setText("B.");
+        btnB.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnB.addActionListener(this::btnBActionPerformed);
+        jPanel1.add(btnB, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 270, 420, -1));
 
-        jButton6.setText("A.");
-        jButton6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jPanel1.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 420, -1));
+        btnA.setText("A.");
+        btnA.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        btnA.addActionListener(this::btnAActionPerformed);
+        jPanel1.add(btnA, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 420, -1));
 
         jLayeredPane1.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 50, 490, 440));
 
@@ -90,13 +179,68 @@ public class studentExamInterface extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+        selectedAnswer  = "C";
+        
+    }//GEN-LAST:event_btnCActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+        selectedAnswer  = "D";
+    }//GEN-LAST:event_btnDActionPerformed
+
+    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
+        if (selectedAnswer.equals(correctAnswers.get(currentQuestion))){
+            score++;
+        }
+        currentQuestion++;
+        selectedAnswer = "";
+        
+        if (currentQuestion < questionsList.size()){
+            showQuestion();
+        }else {
+            JOptionPane.showMessageDialog(this, "Exam done, hope you pass.");
+        }
+    }//GEN-LAST:event_btnNextActionPerformed
+
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
+        // TODO add your handling code here:
+        if (selectedAnswer.equals(correctAnswers.get(currentQuestion))){
+            score++;
+            
+        }
+        String status = (score >= 5)? "Passed" : "Failed";
+        
+        try{
+            String sql = "INSERT INTO results(student_id, subject, score, status VALUES(?, ?, ?, ?)";
+            pst = con.prepareStatement(sql);
+            
+            pst.setInt(1, studentId);
+            pst.setString(2, subject);
+            pst.setInt(3, score);
+            pst.setString(4, status);
+            
+            pst.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this, "Exam Submitted!\nScore: " + score);
+            
+            new studentDashboard(studentId).setVisible(true);
+            this.dispose();
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }//GEN-LAST:event_btnSubmitActionPerformed
+
+    private void btnAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAActionPerformed
+        // TODO add your handling code here:
+        selectedAnswer  = "A";
+    }//GEN-LAST:event_btnAActionPerformed
+
+    private void btnBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBActionPerformed
+        // TODO add your handling code here:
+        selectedAnswer  = "B";
+    }//GEN-LAST:event_btnBActionPerformed
 
     /**
      * @param args the command line arguments
@@ -120,19 +264,19 @@ public class studentExamInterface extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new studentExamInterface().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new studentExamInterface(1, "Math").setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
+    private javax.swing.JButton btnA;
+    private javax.swing.JButton btnB;
+    private javax.swing.JButton btnC;
+    private javax.swing.JButton btnD;
+    private javax.swing.JButton btnNext;
+    private javax.swing.JButton btnSubmit;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel questions;
     // End of variables declaration//GEN-END:variables
 }

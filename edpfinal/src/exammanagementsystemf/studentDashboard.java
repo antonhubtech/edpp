@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author ANTON
@@ -28,11 +29,13 @@ public class studentDashboard extends javax.swing.JFrame {
     public studentDashboard(int studentId) {
     initComponents();
     setLocationRelativeTo(null);
+    loadAvailableExams();
+    loadResults();
 
-    jButton2.setBackground(new java.awt.Color(120, 135, 155));
-    jButton2.setText("Edit Info");
-    jButton2.addActionListener(this::jButton2ActionPerformed);
-    jPanel7.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 80, -1));  
+    btnEdit.setBackground(new java.awt.Color(120, 135, 155));
+    btnEdit.setText("Edit Info");
+    btnEdit.addActionListener(this::btnEditActionPerformed);
+    jPanel7.add(btnEdit, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 80, -1));  
     
     this.studentId = studentId;
 
@@ -45,13 +48,16 @@ public class studentDashboard extends javax.swing.JFrame {
 }
     public void loadStudentInfo() {
     try {
-        String sql = "SELECT student_id, username, section, course FROM accountStudents WHERE student_id = " + studentId;
+        String sql = "SELECT * FROM accountStudents student_id =?";
+        PreparedStatement pst = con.prepareStatement(sql);
+
+        pst.setInt(1, studentId);
         ResultSet rs = st.executeQuery(sql);
 
         if (rs.next()) {
-            nameStudent.setText(rs.getString("username"));
+            txtName.setText(rs.getString("username"));
             jLabel25.setText(rs.getString("student_id"));
-            jLabel26.setText(rs.getString("section"));
+            txtSection.setText(rs.getString("section"));
 
             String course = rs.getString("course");
             if (course == null || course.trim().isEmpty()) {
@@ -112,27 +118,28 @@ public class studentDashboard extends javax.swing.JFrame {
         jLabel22 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblAvailableExams = new javax.swing.JTable();
         jPanel6 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable4 = new javax.swing.JTable();
+        tblExamResults = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         btnAdminUMLogout = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnLogout = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        name = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        Section = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        nameStudent = new javax.swing.JLabel();
+        btnEdit = new javax.swing.JButton();
+        btnChange = new javax.swing.JButton();
+        txtName = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
-        jLabel26 = new javax.swing.JLabel();
+        txtSection = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
+        btnTakeExam = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jLabel18 = new javax.swing.JLabel();
@@ -257,16 +264,16 @@ public class studentDashboard extends javax.swing.JFrame {
         jLabel16.setText("Available Exams");
         jPanel4.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 90, -1, -1));
 
-        jTable1.setBackground(new java.awt.Color(170, 178, 190));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblAvailableExams.setBackground(new java.awt.Color(170, 178, 190));
+        tblAvailableExams.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Subject", "", "Status", "Duration"
+                "Subject", "Status", "Duration"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(tblAvailableExams);
 
         jPanel4.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 110, 680, 140));
 
@@ -280,16 +287,16 @@ public class studentDashboard extends javax.swing.JFrame {
         jLabel17.setText("Exam Results");
         jPanel6.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(24, 6, -1, -1));
 
-        jTable4.setBackground(new java.awt.Color(170, 178, 190));
-        jTable4.setModel(new javax.swing.table.DefaultTableModel(
+        tblExamResults.setBackground(new java.awt.Color(170, 178, 190));
+        tblExamResults.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Subject", "Score", "Status"
+                "Student ID", "Subject", "Score", "Status"
             }
         ));
-        jScrollPane5.setViewportView(jTable4);
+        jScrollPane5.setViewportView(tblExamResults);
 
         jPanel6.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 30, 680, 170));
 
@@ -297,21 +304,19 @@ public class studentDashboard extends javax.swing.JFrame {
 
         jPanel1.add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 20, 700, 500));
 
-        jPanel3.setBackground(new java.awt.Color(71, 85, 105));
+        jPanel3.setBackground(new java.awt.Color(71, 85, 110));
         jPanel3.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnAdminUMLogout.setText("Logout");
         jPanel3.add(btnAdminUMLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 530, 170, 30));
 
-        jButton1.setBackground(new java.awt.Color(30, 41, 59));
-        jButton1.setText("Logout");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
-        jPanel3.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, 170, 30));
+        btnLogout.setBackground(new java.awt.Color(30, 41, 59));
+        btnLogout.setText("Logout");
+        btnLogout.addActionListener(this::btnLogoutActionPerformed);
+        jPanel3.add(btnLogout, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 450, 170, 30));
 
         jPanel7.setBackground(new java.awt.Color(102, 132, 171));
         jPanel7.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Admin\\Documents\\ExamMSystem.Images\\admin.png")); // NOI18N
         jPanel7.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, 60));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -319,40 +324,46 @@ public class studentDashboard extends javax.swing.JFrame {
         jLabel2.setText("Student");
         jPanel7.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, -1, -1));
 
-        jLabel3.setText("Name:");
-        jPanel7.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
+        name.setText("Name:");
+        jPanel7.add(name, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
         jLabel4.setText("Student ID:");
         jPanel7.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, -1));
 
-        jLabel5.setText("Section:");
-        jPanel7.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
+        Section.setText("Section:");
+        jPanel7.add(Section, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
 
         jLabel6.setText("Course:");
         jPanel7.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, -1, -1));
 
-        jButton2.setBackground(new java.awt.Color(120, 135, 155));
-        jButton2.setText("Edit Info");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
-        jPanel7.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 80, -1));
+        btnEdit.setBackground(new java.awt.Color(120, 135, 155));
+        btnEdit.setText("Edit Info");
+        btnEdit.addActionListener(this::btnEditActionPerformed);
+        jPanel7.add(btnEdit, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 80, -1));
 
-        jButton3.setBackground(new java.awt.Color(120, 135, 155));
-        jButton3.setText("Change Pass");
-        jPanel7.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, -1, -1));
+        btnChange.setBackground(new java.awt.Color(120, 135, 155));
+        btnChange.setText("Change Pass");
+        btnChange.addActionListener(this::btnChangeActionPerformed);
+        jPanel7.add(btnChange, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 210, -1, -1));
 
-        nameStudent.setText("Name");
-        jPanel7.add(nameStudent, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 150, -1));
+        txtName.setText("Name");
+        jPanel7.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, 150, -1));
 
         jLabel25.setText("Student_ID");
         jPanel7.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 110, 130, -1));
 
-        jLabel26.setText("Section");
-        jPanel7.add(jLabel26, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, 140, -1));
+        txtSection.setText("Section");
+        jPanel7.add(txtSection, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, 140, -1));
 
         jLabel27.setText("Course");
         jPanel7.add(jLabel27, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 150, 140, -1));
 
         jPanel3.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 210, 260));
+
+        btnTakeExam.setBackground(new java.awt.Color(78, 100, 110));
+        btnTakeExam.setText("Take Exam");
+        btnTakeExam.addActionListener(this::btnTakeExamActionPerformed);
+        jPanel3.add(btnTakeExam, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, -1, -1));
 
         jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, 210, 500));
 
@@ -370,8 +381,6 @@ public class studentDashboard extends javax.swing.JFrame {
         jScrollPane3.setViewportView(jTable2);
 
         jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 330, -1, 170));
-
-        jLabel18.setIcon(new javax.swing.ImageIcon("C:\\Users\\Admin\\Downloads\\Download CURVE WAVE ABSTRACT BACKGROUND BLUE CYAN for free.jpg")); // NOI18N
         jPanel1.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 540));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, 540));
@@ -379,7 +388,52 @@ public class studentDashboard extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    public void loadAvailableExams(){
+        try{
+            String sql = "SELECT subject, status, duration FROM exams";
+            PreparedStatement pst = con.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            
+            DefaultTableModel model = (DefaultTableModel) tblAvailableExams.getModel();
+            model.setRowCount(0);
+            
+            while (rs.next()){
+                model.addRow(new Object[]{
+                    rs.getString("subject"),
+                    rs.getString("status"),
+                    rs.getString("duration")
+                });
+            }
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+    
+    public void loadResults(){
+        try{
+            String sql = "SELECT subject, score, status FROM results WHERE student_id=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, studentId);
+            
+            ResultSet rs = pst.executeQuery();
+            
+            DefaultTableModel model = (DefaultTableModel) tblExamResults.getModel();
+            model.setRowCount(0);
+            
+            while (rs.next()){
+                model.addRow(new Object []{
+                    rs.getString("subject"),
+                    rs.getString("score"),
+                    rs.getString("status")
+                });
+            }
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+        
+    
+    private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         // TODO add your handling code here:
         JFrame jf = new JFrame();
         jf.setAlwaysOnTop(true);
@@ -387,16 +441,16 @@ public class studentDashboard extends javax.swing.JFrame {
         if (a==0){
             System.exit(0);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnLogoutActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
         
         
-        String newName = JOptionPane.showInputDialog(this, "Enter new username:", nameStudent.getText());
+        String newName = JOptionPane.showInputDialog(this, "Enter new username:", txtName.getText());
     if (newName == null) return;
 
-    String newSection = JOptionPane.showInputDialog(this, "Enter new section:", jLabel26.getText());
+    String newSection = JOptionPane.showInputDialog(this, "Enter new section:", txtSection.getText());
     if (newSection == null) return;
 
     String currentCourse = jLabel27.getText().equals("N/A") ? "" : jLabel27.getText();
@@ -413,24 +467,87 @@ public class studentDashboard extends javax.swing.JFrame {
         return;
     }
 
-    try {
-        String sql = "UPDATE accountStudents SET username = ?, section = ?, course = ? WHERE student_id = ?";
+     try {
+        String name = txtName.getText();
+        String section = txtSection.getText();
+
+        if (name.isEmpty() || section.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Fill all fields!");
+            return;
+        }
+
+        String sql = "UPDATE accountStudents SET username=?, section=? WHERE student_id=?";
         PreparedStatement pst = con.prepareStatement(sql);
 
-        pst.setString(1, newName.trim());
-        pst.setString(2, newSection.trim());
-        pst.setString(3, newCourse.trim());
-        pst.setInt(4, studentId);
+        pst.setString(1, name);
+        pst.setString(2, section);
+        pst.setInt(3, studentId);
 
         pst.executeUpdate();
 
-        JOptionPane.showMessageDialog(this, "Information updated successfully.");
-        loadStudentInfo();
+        JOptionPane.showMessageDialog(this, "Profile Updated!");
 
     } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Error updating info: " + e.getMessage());
+        JOptionPane.showMessageDialog(this, e.getMessage());
     }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeActionPerformed
+        // TODO add your handling code here:
+        try {
+        String oldPass = JOptionPane.showInputDialog(this, "Enter Old Password:");
+        String newPass = JOptionPane.showInputDialog(this, "Enter New Password:");
+        String confirmPass = JOptionPane.showInputDialog(this, "Confirm New Password:");
+
+        if (oldPass == null || newPass == null || confirmPass == null) return;
+
+        if (!newPass.equals(confirmPass)) {
+            JOptionPane.showMessageDialog(this, "Passwords do not match!");
+            return;
+        }
+
+        String sql = "SELECT * FROM accountStudents WHERE student_id=? AND password=?";
+        PreparedStatement pst = con.prepareStatement(sql);
+
+        pst.setInt(1, studentId);
+        pst.setString(2, oldPass);
+
+        ResultSet rs = pst.executeQuery();
+
+        if (rs.next()) {
+
+            sql = "UPDATE accountStudents SET password=? WHERE student_id=?";
+            pst = con.prepareStatement(sql);
+
+            pst.setString(1, newPass);
+            pst.setInt(2, studentId);
+
+            pst.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Password Changed!");
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Wrong old password!");
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, e.getMessage());
+    }
+    }//GEN-LAST:event_btnChangeActionPerformed
+
+    private void btnTakeExamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTakeExamActionPerformed
+        // TODO add your handling code here:
+        int row = tblAvailableExams.getSelectedRow();
+                
+                if (row == -1){
+                    JOptionPane.showMessageDialog(this, "Select exam first!");
+                    return;
+                }
+                String subject = tblAvailableExams.getValueAt(row, 0).toString();
+                
+                new studentExamInterface(studentId, subject).setVisible(true);
+                this.dispose();;
+    }//GEN-LAST:event_btnTakeExamActionPerformed
 
     /**
      * @param args the command line arguments
@@ -457,10 +574,12 @@ public class studentDashboard extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new studentDashboard(1).setVisible(true));    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Section;
     private javax.swing.JButton btnAdminUMLogout;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnChange;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnTakeExam;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -478,11 +597,8 @@ public class studentDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel25;
-    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel27;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -503,10 +619,12 @@ public class studentDashboard extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
-    private javax.swing.JTable jTable4;
-    private javax.swing.JLabel nameStudent;
+    private javax.swing.JLabel name;
+    private javax.swing.JTable tblAvailableExams;
+    private javax.swing.JTable tblExamResults;
+    private javax.swing.JLabel txtName;
+    private javax.swing.JLabel txtSection;
     // End of variables declaration//GEN-END:variables
 }
