@@ -29,33 +29,34 @@ public class studentDashboard extends javax.swing.JFrame {
     public studentDashboard(int studentId) {
     initComponents();
     setLocationRelativeTo(null);
-    loadAvailableExams();
-    loadResults();
+    
+    this.studentId = studentId;
+    
+    try {
+        Connection();
+        loadStudentInfo();
+        loadAvailableExams();
+        loadResults();
 
     btnEdit.setBackground(new java.awt.Color(120, 135, 155));
     btnEdit.setText("Edit Info");
     btnEdit.addActionListener(this::btnEditActionPerformed);
     jPanel7.add(btnEdit, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 210, 80, -1));  
-    
-    this.studentId = studentId;
 
-    try {
-        Connection();
-        loadStudentInfo();
+    
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
     }
 }
     public void loadStudentInfo() {
     try {
-        String sql = "SELECT * FROM accountStudents student_id =?";
+        String sql = "SELECT * FROM accountStudents WHERE student_id =?";
         PreparedStatement pst = con.prepareStatement(sql);
-
         pst.setInt(1, studentId);
-        ResultSet rs = st.executeQuery(sql);
+        ResultSet rs = pst.executeQuery();
 
         if (rs.next()) {
-            txtName.setText(rs.getString("username"));
+            txtName.setText(rs.getString("name"));
             jLabel25.setText(rs.getString("student_id"));
             txtSection.setText(rs.getString("section"));
 
@@ -414,7 +415,6 @@ public class studentDashboard extends javax.swing.JFrame {
             String sql = "SELECT subject, score, status FROM results WHERE student_id=?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setInt(1, studentId);
-            
             ResultSet rs = pst.executeQuery();
             
             DefaultTableModel model = (DefaultTableModel) tblExamResults.getModel();
@@ -422,6 +422,7 @@ public class studentDashboard extends javax.swing.JFrame {
             
             while (rs.next()){
                 model.addRow(new Object []{
+                    studentId,
                     rs.getString("subject"),
                     rs.getString("score"),
                     rs.getString("status")
